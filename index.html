@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冶金矿产行业线知识库</title>
+<style>
+/* ===== 全局样式 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #b8860b;
+  --gold-light: #d4a520;
+  --gold-bg: #fdf8ee;
+  --steel: #1a3a5c;
+  --steel-mid: #2d5986;
+  --steel-light: #e8f0f8;
+  --accent: #c0392b;
+  --gray-1: #f7f8fa;
+  --gray-2: #eef0f3;
+  --gray-3: #d0d3d8;
+  --gray-text: #6b7280;
+  --text: #1f2937;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-hover: 0 6px 24px rgba(0,0,0,0.14);
+  --radius: 10px;
+  --transition: 0.22s ease;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', sans-serif;
+  background: var(--gray-1);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ===== 顶部导航 ===== */
+.topbar {
+  background: linear-gradient(135deg, var(--steel) 0%, var(--steel-mid) 100%);
+  color: #fff;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.topbar-inner {
+  max-width: 1300px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 17px; font-weight: 700; letter-spacing: 0.5px;
+}
+.logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.nav-links { display: flex; gap: 4px; }
+.nav-link {
+  color: rgba(255,255,255,0.82); text-decoration: none;
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 14px; transition: var(--transition); cursor: pointer;
+  border: none; background: none;
+}
+.nav-link:hover, .nav-link.active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.search-bar {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 5px 14px; gap: 8px;
+}
+.search-bar input {
+  background: none; border: none; color: #fff; outline: none;
+  font-size: 13px; width: 180px;
+}
+.search-bar input::placeholder { color: rgba(255,255,255,0.5); }
+.search-bar svg { color: rgba(255,255,255,0.6); flex-shrink: 0; }
+
+/* ===== 主内容区 ===== */
+.main { max-width: 1300px; margin: 0 auto; padding: 24px; }
+
+/* ===== 页面视图（单页切换） ===== */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===== 首页 ===== */
+.hero {
+  background: linear-gradient(135deg, var(--steel) 0%, #1e4b7a 60%, var(--steel-mid) 100%);
+  border-radius: 14px; padding: 36px 40px; margin-bottom: 24px;
+  color: #fff; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '⛏'; position: absolute; right: 40px; top: 20px;
+  font-size: 80px; opacity: 0.08;
+}
+.hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+.hero p { color: rgba(255,255,255,0.75); font-size: 14px; line-height: 1.7; }
+.hero-meta {
+  margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 5px 14px; font-size: 12px; color: rgba(255,255,255,0.9);
+}
+
+/* 统计卡片 */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: #fff; border-radius: var(--radius); padding: 20px 24px;
+  box-shadow: var(--shadow); border-left: 4px solid transparent;
+  transition: var(--transition); cursor: pointer;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.stat-card.gold { border-color: var(--gold); }
+.stat-card.steel { border-color: var(--steel); }
+.stat-card.green { border-color: #16a34a; }
+.stat-card.orange { border-color: #ea580c; }
+.stat-num { font-size: 32px; font-weight: 700; line-height: 1; }
+.stat-card.gold .stat-num { color: var(--gold); }
+.stat-card.steel .stat-num { color: var(--steel); }
+.stat-card.green .stat-num { color: #16a34a; }
+.stat-card.orange .stat-num { color: #ea580c; }
+.stat-label { font-size: 13px; color: var(--gray-text); margin-top: 6px; }
+
+/* 公告栏 */
+.notice-board {
+  background: #fff; border-radius: var(--radius);
+  box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden;
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--gray-2);
+}
+.section-title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.section-title .icon { font-size: 18px; }
+.notice-empty {
+  padding: 32px; text-align: center;
+  color: var(--gray-text); font-size: 14px;
+}
+.notice-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 20px; border-bottom: 1px solid var(--gray-2);
+  transition: var(--transition);
+}
+.notice-item:hover { background: var(--gray-1); }
+.notice-tag {
+  flex-shrink: 0; padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; color: #fff;
+  background: var(--accent);
+}
+.notice-title { font-size: 14px; font-weight: 500; }
+.notice-date { font-size: 12px; color: var(--gray-text); margin-top: 3px; }
+
+/* 最新资料 */
+.recent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.recent-section { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.recent-list { padding: 4px 0; }
+.recent-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; border-bottom: 1px solid var(--gray-2);
+  transition: var(--transition); cursor: pointer; text-decoration: none; color: inherit;
+}
+.recent-item:last-child { border-bottom: none; }
+.recent-item:hover { background: var(--gray-1); }
+.recent-item-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.icon-pdf { background: #fee2e2; }
+.icon-html { background: #dbeafe; }
+.icon-img { background: #dcfce7; }
+.icon-pptx { background: #fef3c7; }
+.recent-item-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+.recent-item-meta { font-size: 11px; color: var(--gray-text); margin-top: 2px; }
+.view-all-btn {
+  display: block; text-align: center; padding: 10px;
+  font-size: 12px; color: var(--steel-mid); text-decoration: none;
+  border-top: 1px solid var(--gray-2); transition: var(--transition);
+  background: none; border-left: none; border-right: none; border-bottom: none;
+  cursor: pointer; width: 100%;
+}
+.view-all-btn:hover { background: var(--gray-1); }
+
+/* ===== 卡片列表（资料库通用） ===== */
+.library-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.library-title { font-size: 20px; font-weight: 700; }
+.filter-tabs { display: flex; gap: 6px; }
+.filter-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px;
+  border: 1px solid var(--gray-3); background: #fff; cursor: pointer;
+  transition: var(--transition); color: var(--gray-text);
+}
+.filter-tab.active, .filter-tab:hover {
+  background: var(--steel); color: #fff; border-color: var(--steel);
+}
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+
+.doc-card {
+  background: #fff; border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  transition: var(--transition); cursor: pointer;
+}
+.doc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.doc-card-header {
+  padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px;
+}
+.doc-card-icon {
+  width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.doc-card-info { flex: 1; min-width: 0; }
+.doc-card-title {
+  font-size: 14px; font-weight: 600; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.doc-card-date { font-size: 12px; color: var(--gray-text); margin-top: 4px; }
+.doc-card-tags { padding: 0 18px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; background: var(--steel-light); color: var(--steel);
+}
+.doc-card-summary {
+  padding: 0 18px 14px;
+  font-size: 12px; color: var(--gray-text); line-height: 1.6;
+}
+.doc-card-footer {
+  border-top: 1px solid var(--gray-2); padding: 10px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.doc-card-type {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--gray-text);
+}
+.open-btn {
+  padding: 5px 14px; border-radius: 6px; font-size: 12px;
+  background: var(--steel); color: #fff; border: none; cursor: pointer;
+  transition: var(--transition);
+}
+.open-btn:hover { background: var(--steel-mid); }
+
+/* 每日资讯卡片 特殊样式 */
+.daily-card .doc-card-header { border-bottom: 1px solid var(--gray-2); }
+.daily-highlights { padding: 10px 18px; }
+.daily-highlights li {
+  font-size: 12px; color: var(--gray-text); line-height: 1.8;
+  padding-left: 14px; position: relative;
+}
+.daily-highlights li::before {
+  content: '▸'; position: absolute; left: 0; color: var(--gold);
+}
+
+/* ===== 文档查看器弹窗 ===== */
+.viewer-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.viewer-overlay.open { display: flex; }
+.viewer-modal {
+  background: #fff; border-radius: 14px; width: 92vw; height: 90vh;
+  max-width: 1200px; display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;
+}
+.viewer-topbar {
+  background: var(--steel); color: #fff;
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.viewer-title { font-size: 14px; font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewer-close {
+  background: rgba(255,255,255,0.15); border: none; color: #fff;
+  width: 30px; height: 30px; border-radius: 6px; cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); flex-shrink: 0;
+}
+.viewer-close:hover { background: rgba(255,255,255,0.28); }
+.viewer-body { flex: 1; overflow: hidden; }
+.viewer-body iframe {
+  width: 100%; height: 100%; border: none;
+}
+
+/* 图片幻灯片查看器 */
+.slides-viewer { 
+  display: flex; flex-direction: column; height: 100%; background: #1a1a2e;
+}
+.slides-main {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: 16px; position: relative;
+}
+.slides-main img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: 0.3s ease;
+}
+.slides-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: flex; justify-content: space-between; width: 100%; padding: 0 12px;
+  pointer-events: none;
+}
+.slide-btn {
+  background: rgba(255,255,255,0.15); border: none; color: #fff;
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  pointer-events: all; transition: var(--transition);
+}
+.slide-btn:hover { background: rgba(255,255,255,0.3); }
+.slides-bottom {
+  background: rgba(0,0,0,0.5); padding: 10px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  flex-shrink: 0;
+}
+.slides-counter { color: rgba(255,255,255,0.8); font-size: 13px; }
+.slide-thumb-row {
+  display: flex; gap: 8px; overflow-x: auto; padding: 6px 0;
+}
+.slide-thumb {
+  width: 64px; height: 40px; object-fit: cover;
+  border-radius: 4px; cursor: pointer; opacity: 0.6; flex-shrink: 0;
+  transition: var(--transition); border: 2px solid transparent;
+}
+.slide-thumb.active, .slide-thumb:hover {
+  opacity: 1; border-color: var(--gold-light);
+}
+
+/* 单图片查看 */
+.img-viewer {
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  background: #1a1a2e; padding: 20px;
+}
+.img-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* ===== 搜索结果 ===== */
+.search-view { padding: 20px 0; }
+.search-query-bar {
+  background: #fff; border-radius: var(--radius); padding: 20px 24px;
+  margin-bottom: 20px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 12px;
+}
+.search-query-bar input {
+  flex: 1; border: 1.5px solid var(--gray-3); border-radius: 8px;
+  padding: 10px 16px; font-size: 15px; outline: none;
+  transition: var(--transition);
+}
+.search-query-bar input:focus { border-color: var(--steel-mid); }
+.search-btn {
+  padding: 10px 22px; background: var(--steel); color: #fff;
+  border: none; border-radius: 8px; font-size: 14px; cursor: pointer;
+  transition: var(--transition);
+}
+.search-btn:hover { background: var(--steel-mid); }
+.search-results-list { display: flex; flex-direction: column; gap: 12px; }
+.search-result-item {
+  background: #fff; border-radius: var(--radius); padding: 16px 20px;
+  box-shadow: var(--shadow); cursor: pointer; transition: var(--transition);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.search-result-item:hover { box-shadow: var(--shadow-hover); transform: translateX(3px); }
+.result-icon {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.result-body { flex: 1; }
+.result-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.result-title mark { background: #fef9c3; color: inherit; border-radius: 2px; padding: 0 2px; }
+.result-meta { font-size: 12px; color: var(--gray-text); }
+.result-category {
+  display: inline-block; padding: 1px 7px; border-radius: 4px;
+  font-size: 11px; background: var(--steel-light); color: var(--steel); margin-right: 6px;
+}
+.no-results { text-align: center; padding: 60px 20px; color: var(--gray-text); }
+.no-results .icon { font-size: 48px; display: block; margin-bottom: 12px; }
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .recent-grid { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .search-bar input { width: 120px; }
+}
+@media (max-width: 600px) {
+  .topbar-inner { padding: 0 12px; }
+  .main { padding: 12px; }
+  .hero { padding: 24px 20px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--gray-text);
+}
+.empty-state .icon { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.5; }
+
+/* 分割线标题 */
+.divider-title {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.divider-title h2 { font-size: 18px; font-weight: 700; white-space: nowrap; }
+.divider-line { flex: 1; height: 1px; background: var(--gray-3); }
+
+/* 加载提示 */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  height: 200px; color: var(--gray-text); font-size: 14px; gap: 8px;
+}
+
+/* 动画 */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-in { animation: fadeIn 0.3s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      <div class="logo-icon">⛏</div>
+      <span>冶金矿产行业线知识库</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showView('home')">首页</button>
+      <button class="nav-link" onclick="showView('meetings')">合伙人会议</button>
+      <button class="nav-link" onclick="showView('minutes')">经营例会纪要</button>
+      <button class="nav-link" onclick="showView('daily')">每日资讯</button>
+      <button class="nav-link" onclick="showView('notices')">重点通知</button>
+    </div>
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="topSearchInput" placeholder="搜索资料..." onkeydown="if(event.key==='Enter') doSearch(this.value)">
+    </div>
+  </div>
+</nav>
+
+<!-- 主内容 -->
+<div class="main">
+
+  <!-- ===== 首页 ===== -->
+  <div id="view-home" class="view active">
+    <!-- 英雄区 -->
+    <div class="hero animate-in">
+      <h1>🏭 冶金矿产行业线知识库</h1>
+      <p>汇集审计板块冶金矿产行业线全部资料：合伙人经理会议材料、经营例会纪要、每日市场资讯及重点通知。<br>方便团队成员随时查阅，告别群里翻记录。</p>
+      <div class="hero-meta">
+        <span class="hero-badge" id="hero-lastUpdated">最近更新：加载中...</span>
+        <span class="hero-badge" id="hero-team">审计板块·冶金矿产行业线</span>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-row">
+      <div class="stat-card gold" onclick="showView('meetings')">
+        <div class="stat-num" id="stat-meetings">-</div>
+        <div class="stat-label">📋 合伙人经理会议</div>
+      </div>
+      <div class="stat-card steel" onclick="showView('minutes')">
+        <div class="stat-num" id="stat-minutes">-</div>
+        <div class="stat-label">📝 经营例会纪要</div>
+      </div>
+      <div class="stat-card green" onclick="showView('daily')">
+        <div class="stat-num" id="stat-daily">-</div>
+        <div class="stat-label">📰 每日资讯</div>
+      </div>
+      <div class="stat-card orange" onclick="showView('notices')">
+        <div class="stat-num" id="stat-notices">-</div>
+        <div class="stat-label">📌 重点通知</div>
+      </div>
+    </div>
+
+    <!-- 公告栏 -->
+    <div class="notice-board" id="notice-board">
+      <div class="section-header">
+        <div class="section-title"><span class="icon">📌</span> 重点通知公告</div>
+        <button class="view-all-btn" style="border:none;padding:5px 12px;border-radius:6px;background:var(--steel-light);color:var(--steel);cursor:pointer;font-size:12px;" onclick="showView('notices')">管理通知 →</button>
+      </div>
+      <div id="notice-list"></div>
+    </div>
+
+    <!-- 最新资料 -->
+    <div class="recent-grid">
+      <div class="recent-section">
+        <div class="section-header">
+          <div class="section-title"><span class="icon">📋</span> 最新会议材料</div>
+          <button class="view-all-btn" style="border:none;padding:5px 12px;border-radius:6px;background:var(--steel-light);color:var(--steel);cursor:pointer;font-size:12px;" onclick="showView('meetings')">全部 →</button>
+        </div>
+        <div class="recent-list" id="recent-meetings"></div>
+      </div>
+      <div class="recent-section">
+        <div class="section-header">
+          <div class="section-title"><span class="icon">📰</span> 最新每日资讯</div>
+          <button class="view-all-btn" style="border:none;padding:5px 12px;border-radius:6px;background:var(--steel-light);color:var(--steel);cursor:pointer;font-size:12px;" onclick="showView('daily')">全部 →</button>
+        </div>
+        <div class="recent-list" id="recent-daily"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 合伙人经理会议 ===== -->
+  <div id="view-meetings" class="view">
+    <div class="library-header">
+      <div class="library-title">📋 合伙人经理会议材料</div>
+    </div>
+    <div class="card-grid" id="meetings-grid"></div>
+  </div>
+
+  <!-- ===== 经营例会纪要 ===== -->
+  <div id="view-minutes" class="view">
+    <div class="library-header">
+      <div class="library-title">📝 审计板块行业线经营例会纪要</div>
+    </div>
+    <div class="card-grid" id="minutes-grid"></div>
+  </div>
+
+  <!-- ===== 每日资讯 ===== -->
+  <div id="view-daily" class="view">
+    <div class="library-header">
+      <div class="library-title">📰 冶金矿产每日资讯</div>
+      <div class="filter-tabs" id="daily-year-filter"></div>
+    </div>
+    <div class="card-grid" id="daily-grid"></div>
+  </div>
+
+  <!-- ===== 重点通知 ===== -->
+  <div id="view-notices" class="view">
+    <div class="library-header">
+      <div class="library-title">📌 重点通知</div>
+    </div>
+    <div id="notices-content"></div>
+  </div>
+
+  <!-- ===== 搜索结果 ===== -->
+  <div id="view-search" class="view search-view">
+    <div class="search-query-bar">
+      <input type="text" id="searchInput" placeholder="输入关键词搜索..." onkeydown="if(event.key==='Enter') doSearch(this.value)">
+      <button class="search-btn" onclick="doSearch(document.getElementById('searchInput').value)">搜索</button>
+    </div>
+    <div id="search-results"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ===== 文档查看器弹窗 ===== -->
+<div class="viewer-overlay" id="viewer" onclick="closeViewer(event)">
+  <div class="viewer-modal" onclick="event.stopPropagation()">
+    <div class="viewer-topbar">
+      <div class="viewer-title" id="viewer-title">文档标题</div>
+      <a id="viewer-download" href="#" download style="color:rgba(255,255,255,0.8);font-size:12px;text-decoration:none;padding:4px 10px;border-radius:5px;background:rgba(255,255,255,0.12);margin-right:4px;" title="下载原文件">⬇ 下载</a>
+      <button class="viewer-close" onclick="closeViewerBtn()">✕</button>
+    </div>
+    <div class="viewer-body" id="viewer-body"></div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script>
+// ============================================================
+// 状态管理
+// ============================================================
+let currentView = 'home';
+let currentSlide = 0;
+let currentSlides = [];
+
+// ============================================================
+// 视图切换
+// ============================================================
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+  const el = document.getElementById('view-' + name);
+  if (el) { el.classList.add('active'); el.classList.add('animate-in'); }
+
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + name + "'")) {
+      l.classList.add('active');
+    }
+  });
+
+  currentView = name;
+
+  // 懒初始化各视图
+  if (name === 'home') renderHome();
+  else if (name === 'meetings') renderMeetings();
+  else if (name === 'minutes') renderMinutes();
+  else if (name === 'daily') renderDaily();
+  else if (name === 'notices') renderNotices();
+  else if (name === 'search') {
+    document.getElementById('searchInput').value = document.getElementById('topSearchInput').value;
+  }
+}
+
+// ============================================================
+// 首页渲染
+// ============================================================
+function renderHome() {
+  document.getElementById('stat-meetings').textContent = KB_DATA.stats.meetings;
+  document.getElementById('stat-minutes').textContent = KB_DATA.stats.minutes;
+  document.getElementById('stat-daily').textContent = KB_DATA.stats.dailyNews;
+  document.getElementById('stat-notices').textContent = KB_DATA.stats.notices;
+  document.getElementById('hero-lastUpdated').textContent = '最近更新：' + KB_DATA.meta.lastUpdated;
+
+  // 公告栏
+  const noticeList = document.getElementById('notice-list');
+  if (KB_DATA.notices.length === 0) {
+    noticeList.innerHTML = '<div class="notice-empty">暂无重点通知<br><small style="margin-top:6px;display:block">如需添加通知，请在 data.js 的 notices 数组中添加条目</small></div>';
+  } else {
+    noticeList.innerHTML = KB_DATA.notices.map(n => `
+      <div class="notice-item">
+        <span class="notice-tag" style="background:${n.tagColor||'#c0392b'}">${n.tag||'通知'}</span>
+        <div>
+          <div class="notice-title">${n.title}</div>
+          <div class="notice-date">${n.date}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // 最新会议材料（合伙人+纪要各前3）
+  const allMtg = [...KB_DATA.meetings, ...KB_DATA.minutes].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  document.getElementById('recent-meetings').innerHTML = allMtg.map(d => recentItem(d)).join('') +
+    `<button class="view-all-btn" onclick="showView('meetings')">查看全部会议材料 →</button>`;
+
+  // 最新每日资讯
+  const recentDaily = KB_DATA.dailyNews.slice(0, 5);
+  document.getElementById('recent-daily').innerHTML = recentDaily.map(d => recentItem(d)).join('') +
+    `<button class="view-all-btn" onclick="showView('daily')">查看全部每日资讯 →</button>`;
+}
+
+function recentItem(d) {
+  return `<div class="recent-item" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+    <div class="recent-item-icon ${iconClass(d)}">${iconEmoji(d)}</div>
+    <div>
+      <div class="recent-item-title">${d.title}${d.version ? ' ' + d.version : ''}${d.displayDate ? ' - ' + d.displayDate : ''}</div>
+      <div class="recent-item-meta">${d.date} · ${typeLabel(d)}</div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// 合伙人经理会议
+// ============================================================
+function renderMeetings() {
+  const grid = document.getElementById('meetings-grid');
+  const all = [...KB_DATA.meetings, ...KB_DATA.minutes].sort((a,b)=>b.date.localeCompare(a.date));
+  if (all.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><span class="icon">📋</span>暂无会议材料</div>';
+    return;
+  }
+  grid.innerHTML = all.map(d => docCard(d)).join('');
+}
+
+// ============================================================
+// 经营例会纪要
+// ============================================================
+function renderMinutes() {
+  const grid = document.getElementById('minutes-grid');
+  const all = [...KB_DATA.minutes].sort((a,b)=>b.date.localeCompare(a.date));
+  if (all.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><span class="icon">📝</span>暂无会议纪要</div>';
+    return;
+  }
+  grid.innerHTML = all.map(d => docCard(d)).join('');
+}
+
+// ============================================================
+// 每日资讯
+// ============================================================
+function renderDaily(filterYear) {
+  const grid = document.getElementById('daily-grid');
+  let data = [...KB_DATA.dailyNews].sort((a,b)=>b.date.localeCompare(a.date));
+
+  // 年份筛选按钮
+  const years = [...new Set(data.map(d => d.date.substring(0,4)))];
+  const filterEl = document.getElementById('daily-year-filter');
+  if (filterEl.children.length === 0) {
+    filterEl.innerHTML = `<button class="filter-tab active" onclick="renderDaily('all'); setActiveTab(this)">全部</button>` +
+      years.map(y => `<button class="filter-tab" onclick="renderDaily('${y}'); setActiveTab(this)">${y}年</button>`).join('');
+  }
+
+  if (filterYear && filterYear !== 'all') {
+    data = data.filter(d => d.date.startsWith(filterYear));
+  }
+
+  if (data.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><span class="icon">📰</span>暂无资讯</div>';
+    return;
+  }
+
+  grid.innerHTML = data.map(d => `
+    <div class="doc-card daily-card" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+      <div class="doc-card-header">
+        <div class="doc-card-icon icon-html">📰</div>
+        <div class="doc-card-info">
+          <div class="doc-card-title">${d.displayDate || d.date} 每日资讯</div>
+          <div class="doc-card-date">${d.date}</div>
+        </div>
+      </div>
+      ${d.highlights && d.highlights.length > 0 ? `
+      <ul class="daily-highlights">
+        ${d.highlights.map(h => `<li>${h}</li>`).join('')}
+      </ul>` : ''}
+      <div class="doc-card-footer">
+        <span class="doc-card-type">🌐 HTML 交互版</span>
+        <button class="open-btn" onclick="event.stopPropagation(); openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">查看 →</button>
+      </div>
+    </div>`).join('');
+}
+
+function setActiveTab(el) {
+  el.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ============================================================
+// 重点通知
+// ============================================================
+function renderNotices() {
+  const el = document.getElementById('notices-content');
+  if (KB_DATA.notices.length === 0) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <span class="icon">📌</span>
+        <p>暂无重点通知</p>
+        <p style="margin-top:12px;font-size:13px;line-height:1.8;">如需添加重点通知，请编辑 <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;">assets/js/data.js</code> 文件，<br>
+        在 <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;">notices</code> 数组中添加通知条目即可。</p>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px;">` +
+    KB_DATA.notices.map(n => `
+      <div style="background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border-left:4px solid ${n.tagColor||'#c0392b'}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="background:${n.tagColor||'#c0392b'};color:#fff;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">${n.tag||'通知'}</span>
+          <span style="font-size:15px;font-weight:600;">${n.title}</span>
+          <span style="margin-left:auto;font-size:12px;color:var(--gray-text)">${n.date}</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:#374151">${n.content||''}</div>
+      </div>`).join('') + `</div>`;
+}
+
+// ============================================================
+// 文档卡片通用
+// ============================================================
+function docCard(d) {
+  return `
+    <div class="doc-card" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+      <div class="doc-card-header">
+        <div class="doc-card-icon ${iconClass(d)}">${iconEmoji(d)}</div>
+        <div class="doc-card-info">
+          <div class="doc-card-title">${d.title}${d.version ? ' <span style="color:var(--gray-text);font-weight:400;font-size:11px;">' + d.version + '</span>' : ''}</div>
+          <div class="doc-card-date">${d.date}</div>
+        </div>
+      </div>
+      ${d.tags && d.tags.length ? `<div class="doc-card-tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>` : ''}
+      ${d.summary ? `<div class="doc-card-summary">${d.summary}</div>` : ''}
+      <div class="doc-card-footer">
+        <span class="doc-card-type">${typeIcon(d)} ${typeLabel(d)}</span>
+        <button class="open-btn" onclick="event.stopPropagation(); openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">查看 →</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// 辅助函数
+// ============================================================
+function iconClass(d) {
+  if (d.type === 'pdf') return 'icon-pdf';
+  if (d.type === 'html') return 'icon-html';
+  if (d.type === 'image') return 'icon-img';
+  if (d.type === 'pptx-slides') return 'icon-pptx';
+  return 'icon-html';
+}
+function iconEmoji(d) {
+  if (d.type === 'pdf') return '📄';
+  if (d.type === 'html') return '🌐';
+  if (d.type === 'image') return '🖼';
+  if (d.type === 'pptx-slides') return '📊';
+  return '📄';
+}
+function typeLabel(d) {
+  if (d.type === 'pdf') return 'PDF文档';
+  if (d.type === 'html') return 'HTML交互';
+  if (d.type === 'image') return '图片';
+  if (d.type === 'pptx-slides') return 'PPT幻灯片';
+  return '文档';
+}
+function typeIcon(d) {
+  if (d.type === 'pdf') return '📄';
+  if (d.type === 'html') return '🌐';
+  if (d.type === 'image') return '🖼';
+  if (d.type === 'pptx-slides') return '📊';
+  return '📄';
+}
+
+// ============================================================
+// 文档查看器
+// ============================================================
+function openDoc(d) {
+  const overlay = document.getElementById('viewer');
+  const titleEl = document.getElementById('viewer-title');
+  const bodyEl = document.getElementById('viewer-body');
+  const dlBtn = document.getElementById('viewer-download');
+
+  titleEl.textContent = d.title + (d.displayDate ? ' - ' + d.displayDate : (d.version ? ' ' + d.version : ''));
+
+  if (d.type === 'pdf') {
+    dlBtn.href = d.file;
+    dlBtn.style.display = 'inline-block';
+    bodyEl.innerHTML = `<iframe src="${d.file}" style="width:100%;height:100%;border:none;"></iframe>`;
+  } else if (d.type === 'html') {
+    dlBtn.style.display = 'none';
+    bodyEl.innerHTML = `<iframe src="${d.file}" style="width:100%;height:100%;border:none;"></iframe>`;
+  } else if (d.type === 'image') {
+    dlBtn.href = d.file;
+    dlBtn.style.display = 'inline-block';
+    bodyEl.innerHTML = `<div class="img-viewer"><img src="${d.file}" alt="${d.title}" onclick="toggleZoom(this)"></div>`;
+  } else if (d.type === 'pptx-slides') {
+    dlBtn.href = d.originalFile || '#';
+    dlBtn.style.display = d.originalFile ? 'inline-block' : 'none';
+    // 加载幻灯片
+    loadSlides(d, bodyEl);
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function loadSlides(d, bodyEl) {
+  // 根据 totalSlides 和 slideDir 构建幻灯片
+  const total = d.totalSlides || 1;
+  currentSlides = [];
+  for (let i = 1; i <= total; i++) {
+    currentSlides.push(`${d.slideDir}slide_${String(i).padStart(3,'0')}.jpg`);
+  }
+  currentSlide = 0;
+
+  const thumbsHtml = currentSlides.map((s, i) =>
+    `<img class="slide-thumb ${i===0?'active':''}" src="${s}" alt="幻灯片${i+1}" onclick="gotoSlide(${i})">`
+  ).join('');
+
+  bodyEl.innerHTML = `
+    <div class="slides-viewer">
+      <div class="slides-main">
+        <img id="slide-img" src="${currentSlides[0]}" alt="幻灯片1">
+        <div class="slides-nav">
+          <button class="slide-btn" onclick="prevSlide()">‹</button>
+          <button class="slide-btn" onclick="nextSlide()">›</button>
+        </div>
+      </div>
+      <div class="slides-bottom">
+        <button class="slide-btn" onclick="prevSlide()" style="width:32px;height:32px;font-size:14px;">‹</button>
+        <span class="slides-counter" id="slide-counter">1 / ${total}</span>
+        <button class="slide-btn" onclick="nextSlide()" style="width:32px;height:32px;font-size:14px;">›</button>
+        <div class="slide-thumb-row">${thumbsHtml}</div>
+      </div>
+    </div>`;
+}
+
+function gotoSlide(idx) {
+  currentSlide = idx;
+  const img = document.getElementById('slide-img');
+  const counter = document.getElementById('slide-counter');
+  const thumbs = document.querySelectorAll('.slide-thumb');
+  if (img) img.src = currentSlides[idx];
+  if (counter) counter.textContent = `${idx + 1} / ${currentSlides.length}`;
+  thumbs.forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+function prevSlide() { if (currentSlide > 0) gotoSlide(currentSlide - 1); }
+function nextSlide() { if (currentSlide < currentSlides.length - 1) gotoSlide(currentSlide + 1); }
+
+// 键盘导航
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('viewer').classList.contains('open')) return;
+  if (e.key === 'Escape') closeViewerBtn();
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.key === 'ArrowRight') nextSlide();
+});
+
+function closeViewer(e) {
+  if (e.target.id === 'viewer') closeViewerBtn();
+}
+function closeViewerBtn() {
+  document.getElementById('viewer').classList.remove('open');
+  document.getElementById('viewer-body').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// 搜索
+// ============================================================
+function doSearch(query) {
+  document.getElementById('topSearchInput').value = query;
+  document.getElementById('searchInput').value = query;
+  showView('search');
+
+  query = (query || '').trim();
+  const el = document.getElementById('search-results');
+
+  if (!query) {
+    el.innerHTML = '<div class="no-results"><span class="icon">🔍</span>请输入搜索关键词</div>';
+    return;
+  }
+
+  const q = query.toLowerCase();
+  const results = KB_DATA.allDocs.filter(d => {
+    return (d.title && d.title.toLowerCase().includes(q)) ||
+           (d.summary && d.summary.toLowerCase().includes(q)) ||
+           (d.date && d.date.includes(q)) ||
+           (d.displayDate && d.displayDate.includes(q)) ||
+           (d.version && d.version.toLowerCase().includes(q)) ||
+           (d.tags && d.tags.some(t => t.toLowerCase().includes(q))) ||
+           (d.highlights && d.highlights.some(h => h.toLowerCase().includes(q)));
+  });
+
+  if (results.length === 0) {
+    el.innerHTML = `<div class="no-results"><span class="icon">😶</span>未找到与 "<strong>${query}</strong>" 相关的资料</div>`;
+    return;
+  }
+
+  function highlight(text, q) {
+    if (!text) return '';
+    const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  el.innerHTML = `<div style="margin-bottom:12px;color:var(--gray-text);font-size:13px;">找到 ${results.length} 条结果</div>
+    <div class="search-results-list">` +
+    results.map(d => `
+      <div class="search-result-item" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+        <div class="result-icon ${iconClass(d)}">${iconEmoji(d)}</div>
+        <div class="result-body">
+          <div class="result-title">
+            <span class="result-category">${d.categoryName}</span>
+            ${highlight(d.title + (d.version?' '+d.version:'') + (d.displayDate?' - '+d.displayDate:''), q)}
+          </div>
+          <div class="result-meta">${d.date} · ${typeLabel(d)}
+            ${d.summary ? ' · ' + highlight(d.summary.substring(0,60) + (d.summary.length>60?'...':''), q) : ''}
+          </div>
+        </div>
+      </div>`).join('') + `</div>`;
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  renderHome();
+});
+</script>
+</body>
+</html>
